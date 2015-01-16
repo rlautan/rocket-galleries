@@ -76,12 +76,9 @@ class RG_Gallery {
         // Before action
         do_action( 'rocketgalleries_before_display_gallery', $gallery );
 
-        // Check if a template part is hooked
-        do_action( 'rocketgalleries_hooked_template', $gallery );
-
         // Get our gallery template
         $template = RocketGalleries::get_instance()->template_loader->get_template_part( 'rocketgalleries', $template_name, false );
-
+        
         // Load our template (requiring it this way includes are variables within this function)
         require $template;
 
