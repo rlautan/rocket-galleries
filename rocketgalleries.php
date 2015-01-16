@@ -1209,7 +1209,10 @@ class RocketGalleries {
 
         // Extract shortcode attributes
         extract( shortcode_atts(
-            array( 'id' => false ),
+            array(
+                'id' => false,
+                'template_name' => 'gallery'
+                ),
             $atts
         ) );
 
@@ -1232,7 +1235,7 @@ class RocketGalleries {
          * to always be printed at the top of the post/page unlesss the HTML was returned.
          */
         ob_start();
-        $gallery->display();
+        $gallery->display( $template_name );
         return ob_get_clean();
 
     }
