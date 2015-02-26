@@ -26,6 +26,8 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+error_reporting(E_ALL);
+
 // Let's go!
 if ( class_exists( 'RocketGalleries' ) ) {
     RocketGalleries::get_instance();
@@ -1211,7 +1213,7 @@ class RocketGalleries {
         extract( shortcode_atts(
             array(
                 'id' => false,
-                'template_name' => 'gallery'
+                'template' => 'gallery'
                 ),
             $atts
         ) );
@@ -1235,7 +1237,7 @@ class RocketGalleries {
          * to always be printed at the top of the post/page unlesss the HTML was returned.
          */
         ob_start();
-        $gallery->display( $template_name );
+        $gallery->display( $template );
         return ob_get_clean();
 
     }
@@ -1253,6 +1255,7 @@ class RocketGalleries {
         // Register styles
         wp_register_style( 'rg-admin', plugins_url( dirname( plugin_basename( self::get_file() ) ) . DIRECTORY_SEPARATOR .'css'. DIRECTORY_SEPARATOR .'admin'. $ext ), false, self::$version );
         wp_register_style( 'rg-gallery', plugins_url( dirname( plugin_basename( self::get_file() ) ) . DIRECTORY_SEPARATOR .'css'. DIRECTORY_SEPARATOR .'gallery'. $ext ), false, self::$version );
+        wp_register_style( 'jquery-booklet', plugins_url( dirname( plugin_basename( self::get_file() ) ) . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'jquery.booklet' . DIRECTORY_SEPARATOR .'css'. DIRECTORY_SEPARATOR .'jquery.booklet'. $ext ), false, self::$version );
 
     }
     
@@ -1267,7 +1270,16 @@ class RocketGalleries {
         $ext = ( apply_filters( 'rocketgalleries_debug_scripts', __return_false() ) ) ? '.js' : '.min.js';
 
         // Register scripts
-        wp_register_script( 'rg-admin',  plugins_url( dirname( plugin_basename( self::get_file() ) ) . DIRECTORY_SEPARATOR .'js'. DIRECTORY_SEPARATOR .'admin'. $ext ), array( 'jquery', 'jquery-ui-sortable', 'backbone' ), self::$version, true );
+        wp_register_script( 'rg-admin',  plugins_url( dirname( plugin_basename( self::get_file() ) ) . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'admin' . $ext ), array( 'jquery', 'jquery-ui-sortable', 'backbone' ), self::$version, true );
+        wp_register_script( 'jquery-easing',  plugins_url( dirname( plugin_basename( self::get_file() ) ) . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'jquery.easing' . $ext ), array( 'jquery' ), self::$version, true );
+        wp_register_script( 'jquery-booklet',  plugins_url( dirname( plugin_basename( self::get_file() ) ) . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'jquery.booklet' . $ext ), array( 'jquery-easing' ), self::$version, true );
+
+        wp_deregister_script( 'jquery' );
+        wp_register_script( 'jquery', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js", false, null );
+        wp_deregister_script( 'jquery-ui' );
+        wp_register_script( 'jquery-ui', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js", array('jquery'), null );
+        wp_deregister_script( 'jquery-mobile' );
+        wp_enqueue_script( 'jquery-mobile', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.js", array('jquery'), null );
 
     }
 
@@ -1298,6 +1310,7 @@ class RocketGalleries {
 
         // Enqueue the assets appropriately
         add_action( $hook, create_function( '', 'wp_enqueue_style( \'rg-gallery\' );' ) );
+        add_action( $hook, create_function( '', 'wp_enqueue_style( \'jquery-booklet\' );' ) );
         add_action( $hook, create_function( '', 'do_action( \'rocketgalleries_enqueue_gallery_assets\' );' ) );
 
     }

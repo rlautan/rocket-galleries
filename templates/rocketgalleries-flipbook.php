@@ -20,5 +20,3 @@
         <a href="#" class="next"><span>next</span></a>
     </div>
 </div>
-
-<?php flipbook_script(); ?>
