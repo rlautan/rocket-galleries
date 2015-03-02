@@ -125,6 +125,10 @@
 	    text-align: left;
 	}
 
+	.rocketgalleries-flipbook .rocketgalleries-flipbook-page img {
+		width: 100%;
+	}
+
 	.rocketgalleries-flipbook .controls {
 		clear: both;
 		border-top: 1px solid #ddd;
